@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "MediMind AI",
+    "slug": "medimind-mobile",
+    "version": "1.0.0",
+    "scheme": "medimind",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.medimind.ai"
+    },
+    "android": {
+      "package": "com.medimind.ai",
+      "adaptiveIcon": {
+        "backgroundColor": "#030712",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-splash-screen"
+    ],
+    "extra": {
+      "apiUrl": null,
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}
