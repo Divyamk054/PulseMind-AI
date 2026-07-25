@@ -25,7 +25,7 @@ export default function LandingPage() {
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
             <Brain size={18} />
           </div>
-          <span className="font-bold text-lg">MediMind AI</span>
+          <span className="font-bold text-lg">PulseMind AI</span>
         </div>
         <div className="flex gap-3">
           <button onClick={() => navigate("/login")} className="px-4 py-2 text-sm text-gray-300 hover:text-white transition-colors">Sign In</button>
@@ -89,7 +89,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-800 px-8 py-6 text-center text-xs text-gray-600">
-        © 2026 MediMind AI · Not a substitute for professional medical advice
+        © 2026 PulseMind AI · Not a substitute for professional medical advice
       </footer>
     </div>
   );

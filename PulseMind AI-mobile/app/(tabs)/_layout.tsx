@@ -61,7 +61,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Dashboard",
-          headerTitle: "🧠 MediMind AI",
+          headerTitle: "🧠 PulseMind AI",
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 20, color }}>🏠</Text>
           ),

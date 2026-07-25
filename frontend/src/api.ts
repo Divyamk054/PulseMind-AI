@@ -20,7 +20,7 @@ async function request(method: string, path: string, body?: any, isForm = false)
 
 const getUserId = (): string => {
   try {
-    const user = localStorage.getItem("medimind_user");
+    const user = localStorage.getItem("pulsemind_user");
     if (user) {
       const parsed = JSON.parse(user);
       if (parsed?.id) return parsed.id;
@@ -56,6 +56,7 @@ export const api = {
     return request("POST", "/api/imaging/classify", form, true);
   },
   getImages: () => request("GET", `/api/imaging?user_id=${getUserId()}`),
+  deleteImage: (id: string) => request("DELETE", `/api/imaging/${id}`),
 
   // ── Prescriptions ────────────────────────────────────────
   uploadPrescription: (file: File) => {
@@ -65,6 +66,7 @@ export const api = {
     return request("POST", "/api/prescriptions/upload", form, true);
   },
   getPrescriptions: () => request("GET", `/api/prescriptions?user_id=${getUserId()}`),
+  deletePrescription: (id: string) => request("DELETE", `/api/prescriptions/${id}`),
 
   // ── Risk Prediction ──────────────────────────────────────
   predictRisk: (data: object) =>
@@ -118,10 +120,6 @@ export const api = {
   getEmergencyGuidance: (emergencyType: string, context?: string) =>
     request("POST", "/api/emergency/guidance", { emergency_type: emergencyType, context: context || "" }),
 
-  // ── Report Compare ───────────────────────────────────────
-  compareReports: (reportText1: string, reportText2: string) =>
-    request("POST", "/api/reports/compare", { report_text_1: reportText1, report_text_2: reportText2 }),
-
   // ── Health Risk V5 ───────────────────────────────────────
   healthRiskV5: (profile: object) => request("POST", "/api/health-risk-v5", profile),
   bmiAdvice: (weightKg: number, heightCm: number, age: number, gender: string) =>
@@ -131,19 +129,7 @@ export const api = {
   auditBill: (billText: string) =>
     request("POST", "/api/bill-audit", { bill_text: billText }),
 
-  // ── V4.0 AI Doctor Visit Simulator ──────────────────────
-  doctorVisit: (payload: {
-    symptoms: string; duration: string; medical_history?: string;
-    medications?: string; lifestyle?: string; report_text?: string;
-  }) => request("POST", "/api/doctor-visit", { ...payload, user_id: getUserId() }),
-  getDoctorVisitHistory: () => request("GET", `/api/doctor-visit/history?user_id=${getUserId()}`),
 
-  // ── V4.0 Health Twin Forecast ────────────────────────────
-  healthForecast: (payload: {
-    age: number; weight_kg: number; height_cm: number; systolic_bp: number;
-    glucose: number; cholesterol: number; exercise_days_per_week: number;
-  }) => request("POST", "/api/health-forecast", { ...payload, user_id: getUserId() }),
-  getHealthForecastHistory: () => request("GET", `/api/health-forecast/history?user_id=${getUserId()}`),
 
   // ── V4.0 Disease Progression Simulator ──────────────────
   diseaseSimulation: (payload: { disease: string; current_metrics: object; scenario?: string }) =>
@@ -193,9 +179,7 @@ export const api = {
   getPreventionHistory: () =>
     request("GET", `/api/prevention-engine/history?user_id=${getUserId()}`),
 
-  // ── V5.0 Phase 5: Doctor Visit PDF ───────────────────────
-  downloadConsultationPdf: (sessionId: string) =>
-    `${API_BASE}/api/doctor-visit/${sessionId}/pdf`,
+
 
   // ── V5.0 Phase 8: Voice Assistant ────────────────────────
   voiceRespond: (query: string, language = "en") =>

@@ -13,6 +13,10 @@ db_client = None
 
 # Attempt Firebase Admin SDK setup
 cred_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_KEY")
+if cred_path and not os.path.isabs(cred_path):
+    backend_dir = os.path.dirname(os.path.dirname(__file__))
+    cred_path = os.path.join(backend_dir, cred_path)
+
 if cred_path and os.path.exists(cred_path):
     try:
         cred = credentials.Certificate(cred_path)

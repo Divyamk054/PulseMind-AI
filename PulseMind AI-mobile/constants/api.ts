@@ -1,5 +1,5 @@
 /**
- * MediMind AI — Shared API configuration for the Expo mobile app.
+ * PulseMind AI — Shared API configuration for the Expo mobile app.
  * Update API_BASE_URL to point to your deployed backend in production.
  * For Android emulator, use 10.0.2.2 (maps to host machine localhost).
  * For iOS simulator / Web, use localhost directly.

@@ -1,1 +1,1 @@
-# MediMind AI Engines package
+# PulseMind AI Engines package

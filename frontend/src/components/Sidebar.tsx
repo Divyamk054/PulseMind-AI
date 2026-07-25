@@ -21,7 +21,6 @@ const NAV_GROUPS: { label: string; color: string; items: NavItem[] }[] = [
       { path: "/dashboard",        icon: LayoutDashboard, label: "Dashboard" },
       { path: "/command-center",   icon: Zap,             label: "⚡ Command Center" },
       { path: "/health-copilot",   icon: Bot,             label: "AI Copilot" },
-      { path: "/national-impact",  icon: Flag,            label: "🇮🇳 National Impact" },
     ]
   },
   {
@@ -43,8 +42,6 @@ const NAV_GROUPS: { label: string; color: string; items: NavItem[] }[] = [
     label: "AI Features",
     color: "text-purple-400",
     items: [
-      { path: "/doctor-visit",      icon: Stethoscope, label: "Doctor Visit AI" },
-      { path: "/health-forecast",   icon: TrendingUp,  label: "Health Forecast" },
       { path: "/disease-simulator", icon: GitBranch,   label: "Disease Simulator" },
       { path: "/medical-research",  icon: BookOpen,    label: "Research Agent" },
       { path: "/family-health",     icon: Users,       label: "Family Health" },
@@ -56,9 +53,7 @@ const NAV_GROUPS: { label: string; color: string; items: NavItem[] }[] = [
     items: [
       { path: "/reports",           icon: FileText,      label: "Reports" },
       { path: "/imaging",           icon: ScanLine,      label: "Medical Imaging" },
-      { path: "/symptoms",          icon: Activity,      label: "Symptom Checker" },
       { path: "/risk",              icon: AlertTriangle, label: "Risk Prediction" },
-      { path: "/prescriptions",     icon: Pill,          label: "Prescriptions" },
     ]
   },
   {
@@ -76,8 +71,6 @@ const NAV_GROUPS: { label: string; color: string; items: NavItem[] }[] = [
       { path: "/medications",       icon: Pill,          label: "Medications" },
       { path: "/appointments",      icon: Calendar,      label: "Appointments" },
       { path: "/nutrition",         icon: Apple,         label: "Nutrition" },
-      { path: "/timeline",          icon: Clock,         label: "Timeline" },
-      { path: "/mental-health",     icon: Smile,         label: "Mental Health" },
     ]
   },
   {
@@ -85,12 +78,6 @@ const NAV_GROUPS: { label: string; color: string; items: NavItem[] }[] = [
     color: "text-amber-400",
     items: [
       { path: "/chat",              icon: MessageSquare, label: "AI Assistant" },
-      { path: "/drug-interactions", icon: HeartPulse,   label: "Drug Interactions" },
-      { path: "/second-opinion",    icon: HelpCircle,   label: "Second Opinion" },
-      { path: "/bio-twin",          icon: Activity,     label: "Bio-Twin" },
-      { path: "/bill-auditor",      icon: Receipt,      label: "Bill Auditor" },
-      { path: "/pathway-visualizer",icon: RefreshCw,    label: "Pathway Synapse" },
-      { path: "/report-comparison", icon: RefreshCw,    label: "Report Compare" },
     ]
   },
 ];
@@ -142,7 +129,7 @@ export default function Sidebar() {
             <Brain size={16} className="text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold text-white leading-tight">MediMind AI</div>
+            <div className="text-sm font-bold text-white leading-tight">PulseMind AI</div>
             <div className="text-xs text-gray-500">v4.0 Platform</div>
           </div>
         </div>

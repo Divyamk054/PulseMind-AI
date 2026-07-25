@@ -44,18 +44,18 @@ export default function Login() {
   // Quick demo login
   const demoLogin = (role: "patient" | "admin") => {
     const creds = role === "admin"
-      ? { email: "admin@medimind.ai", pass: "admin123", name: "Dr. Administrator", id: "admin-id", role: "admin" }
+      ? { email: "admin@pulsemind.ai", pass: "admin123", name: "Dr. Administrator", id: "admin-id", role: "admin" }
       : { email: "patient@demo.com", pass: "demo123", name: "Demo Patient", id: "demo-user", role: "patient" };
     
     if (role === "patient") {
-      const users = JSON.parse(localStorage.getItem("medimind_users") || "[]");
+      const users = JSON.parse(localStorage.getItem("pulsemind_users") || "[]");
       if (!users.find((u: any) => u.email === creds.email)) {
         users.push({ ...creds });
-        localStorage.setItem("medimind_users", JSON.stringify(users));
+        localStorage.setItem("pulsemind_users", JSON.stringify(users));
       }
     }
     const { pass, ...userProfile } = creds as any;
-    localStorage.setItem("medimind_user", JSON.stringify(userProfile));
+    localStorage.setItem("pulsemind_user", JSON.stringify(userProfile));
     setUser(userProfile);
     navigate("/dashboard");
   };
@@ -68,7 +68,7 @@ export default function Login() {
           <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
             <Brain size={20} className="text-white" />
           </div>
-          <span className="text-xl font-bold text-white">MediMind AI</span>
+          <span className="text-xl font-bold text-white">PulseMind AI</span>
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">

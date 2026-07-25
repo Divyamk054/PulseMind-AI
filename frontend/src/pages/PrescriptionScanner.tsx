@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Pill, Upload, Loader, AlertCircle, Clock } from "lucide-react";
+import { Pill, Upload, Loader, AlertCircle, Clock, Trash2 } from "lucide-react";
 import { api } from "../api";
 
 export default function PrescriptionScanner() {
@@ -8,19 +8,35 @@ export default function PrescriptionScanner() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => { api.getPrescriptions().then(setPrescriptions).catch(() => {}); }, []);
+  const loadPrescriptions = async () => {
+    try {
+      const presc = await api.getPrescriptions();
+      setPrescriptions(presc);
+    } catch {}
+  };
+
+  useEffect(() => { loadPrescriptions(); }, []);
 
   const handleUpload = async (file: File) => {
     setUploading(true); setError(""); setResult(null);
     try {
       const res = await api.uploadPrescription(file);
       setResult(res);
-      const presc = await api.getPrescriptions();
-      setPrescriptions(presc);
+      await loadPrescriptions();
     } catch (e: any) {
       setError(e.message);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await api.deletePrescription(id);
+      if (result?.id === id) setResult(null);
+      await loadPrescriptions();
+    } catch (e: any) {
+      setError(e.message || "Failed to delete prescription");
     }
   };
 
@@ -97,8 +113,16 @@ export default function PrescriptionScanner() {
                     <Pill size={14} className="text-green-400" />
                     <span className="text-sm font-medium text-white">{p.filename}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Clock size={11} /> {p.date}
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1 text-xs text-gray-500">
+                      <Clock size={11} /> {p.date}
+                    </span>
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      className="flex items-center gap-1 text-xs text-red-400 border border-red-400/30 px-2 py-0.5 rounded hover:bg-red-400/10 transition-all"
+                    >
+                      <Trash2 size={11} /> Delete
+                    </button>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">

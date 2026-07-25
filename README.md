@@ -1,1 +1,1 @@
-# med-mind-ai1
+# PulseMind AI

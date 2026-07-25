@@ -4,7 +4,7 @@ import { Zap, Upload, Loader, CheckCircle, Circle, ChevronDown, ChevronUp, Alert
 
 const PIPELINE_STEPS = [
   { id: "report_analysis",    label: "Parse Medical Report",      icon: FileText,       color: "blue" },
-  { id: "timeline_entry",     label: "Update Health Timeline",    icon: Activity,       color: "cyan" },
+  { id: "timeline_entry",     label: "Process Health Records",    icon: Activity,       color: "cyan" },
   { id: "twin_update",        label: "Update Health Twin",        icon: Activity,       color: "purple" },
   { id: "risk_assessment",    label: "Calculate Risk Scores",     icon: AlertTriangle,  color: "amber" },
   { id: "drug_interactions",  label: "Check Drug Interactions",   icon: Zap,            color: "red" },
@@ -40,7 +40,7 @@ export default function CommandCenter() {
         }
         const form = new FormData();
         form.append("file", file);
-        form.append("user_id", JSON.parse(localStorage.getItem("medimind_user") || "{}").id || "demo-user");
+        form.append("user_id", JSON.parse(localStorage.getItem("pulsemind_user") || "{}").id || "demo-user");
         form.append("medications", medications);
         res = await api.commandCenterUpload(form);
       } else {

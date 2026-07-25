@@ -81,8 +81,12 @@ def extract_text_from_file(content: bytes, ext: str, filename: str) -> str:
 
     return ""
 
-from backend.database.db import DatabaseManager, FIREBASE_ACTIVE
-from backend.engines import ai_engines
+try:
+    from backend.database.db import DatabaseManager, FIREBASE_ACTIVE
+    from backend.engines import ai_engines
+except ImportError:
+    from database.db import DatabaseManager, FIREBASE_ACTIVE
+    from engines import ai_engines
 
 
 # Directory Setup for Uploads
@@ -99,7 +103,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("main")
 
 app = FastAPI(
-    title="MediMind AI API",
+    title="PulseMind AI API",
     description="Production-ready healthcare API supporting report uploads, diagnostics prediction, and clinical Q&A.",
     version="1.0.0"
 )
@@ -141,7 +145,7 @@ class RiskParams(BaseModel):
 # Endpoints
 @app.get("/")
 def health_check():
-    return {"status": "healthy", "service": "MediMind AI Platform API"}
+    return {"status": "healthy", "service": "PulseMind AI Platform API"}
 
 # ================= REPORT UPLOADS & OCR =================
 @app.post("/api/reports/upload")
@@ -212,6 +216,34 @@ def delete_report(doc_id: str):
         DatabaseManager.delete("analysis_results", doc_id)
         return {"message": "Report deleted successfully."}
     raise HTTPException(status_code=404, detail="Document not found.")
+
+@app.delete("/api/imaging/{image_id}")
+def delete_imaging(image_id: str):
+    img = DatabaseManager.get("medical_images", image_id)
+    if img:
+        path = img.get("local_path")
+        if path and os.path.exists(path):
+            try:
+                os.remove(path)
+            except Exception as e:
+                logger.warning(f"Could not remove image file: {e}")
+        DatabaseManager.delete("medical_images", image_id)
+        return {"message": "Medical image deleted successfully."}
+    raise HTTPException(status_code=404, detail="Medical image not found.")
+
+@app.delete("/api/prescriptions/{presc_id}")
+def delete_prescription(presc_id: str):
+    presc = DatabaseManager.get("prescriptions", presc_id)
+    if presc:
+        path = presc.get("local_path")
+        if path and os.path.exists(path):
+            try:
+                os.remove(path)
+            except Exception as e:
+                logger.warning(f"Could not remove prescription file: {e}")
+        DatabaseManager.delete("prescriptions", presc_id)
+        return {"message": "Prescription deleted successfully."}
+    raise HTTPException(status_code=404, detail="Prescription not found.")
 
 # ================= MEDICAL CHAT (RAG) =================
 @app.post("/api/chat")
@@ -411,7 +443,7 @@ def export_pdf_report(doc_id: str):
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=medimind_report_{doc_id}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename=pulsemind_report_{doc_id}.pdf"}
     )
 
 # ================= ADMIN DASHBOARD =================
@@ -500,10 +532,6 @@ class DifferentialQuery(BaseModel):
 class EmergencyQuery(BaseModel):
     emergency_type: str
     context: str = ""
-
-class ReportCompareQuery(BaseModel):
-    report_text_1: str
-    report_text_2: str
 
 class MedReminderCreate(BaseModel):
     drug: str
@@ -647,12 +675,6 @@ def emergency_guidance(payload: EmergencyQuery):
     result = ai_engines.get_emergency_guidance(payload.emergency_type, payload.context)
     return {"result": result}
 
-# --- Report Comparison ---
-@app.post("/api/reports/compare")
-def compare_reports(payload: ReportCompareQuery):
-    result = ai_engines.compare_reports_v5(payload.report_text_1, payload.report_text_2)
-    return {"result": result}
-
 
 # ================= BILL AUDIT =================
 class BillAuditQuery(BaseModel):
@@ -668,25 +690,6 @@ def audit_medical_bill(payload: BillAuditQuery):
 # ================= V4.0 NEW ROUTES =================
 
 # --- Pydantic Schemas ---
-class DoctorVisitRequest(BaseModel):
-    symptoms: str
-    duration: str
-    medical_history: str = ""
-    medications: str = ""
-    lifestyle: str = ""
-    report_text: str = ""
-    user_id: str = "demo-user"
-
-class HealthForecastRequest(BaseModel):
-    age: int = Field(..., ge=1, le=120)
-    weight_kg: float = Field(..., ge=20.0, le=300.0)
-    height_cm: float = Field(..., ge=100.0, le=250.0)
-    systolic_bp: int = Field(..., ge=60, le=250)
-    glucose: float = Field(..., ge=50.0, le=600.0)
-    cholesterol: float = Field(..., ge=80.0, le=500.0)
-    exercise_days_per_week: int = Field(..., ge=0, le=7)
-    user_id: str = "demo-user"
-
 class DiseaseSimRequest(BaseModel):
     disease: str  # diabetes / hypertension / obesity / heart_disease
     current_metrics: dict
@@ -721,56 +724,6 @@ class CommandCenterRequest(BaseModel):
     report_text: str
     medications: Optional[List[str]] = None
     user_id: str = "demo-user"
-
-
-# --- AI Doctor Visit Simulator ---
-@app.post("/api/doctor-visit")
-def doctor_visit_simulate(payload: DoctorVisitRequest):
-    result = ai_engines.simulate_doctor_visit(
-        payload.symptoms, payload.duration, payload.medical_history,
-        payload.medications, payload.lifestyle, payload.report_text
-    )
-    session_id = str(uuid.uuid4())
-    record = {
-        "id": session_id,
-        "user_id": payload.user_id,
-        "symptoms": payload.symptoms,
-        "duration": payload.duration,
-        "result": result,
-        "timestamp": now_iso(),
-        "date": now_date()
-    }
-    DatabaseManager.insert("doctor_sessions", session_id, record)
-    return {**record}
-
-@app.get("/api/doctor-visit/history")
-def get_doctor_visit_history(user_id: str = "demo-user"):
-    return DatabaseManager.get_all("doctor_sessions", {"user_id": user_id})
-
-
-# --- Health Twin Forecast Engine ---
-@app.post("/api/health-forecast")
-def health_forecast(payload: HealthForecastRequest):
-    result = ai_engines.forecast_health_twin(
-        payload.age, payload.weight_kg, payload.height_cm,
-        payload.systolic_bp, payload.glucose, payload.cholesterol,
-        payload.exercise_days_per_week
-    )
-    forecast_id = str(uuid.uuid4())
-    record = {
-        "id": forecast_id,
-        "user_id": payload.user_id,
-        "inputs": payload.dict(),
-        "forecast": result,
-        "timestamp": now_iso(),
-        "date": now_date()
-    }
-    DatabaseManager.insert("health_forecasts", forecast_id, record)
-    return record
-
-@app.get("/api/health-forecast/history")
-def get_health_forecast_history(user_id: str = "demo-user"):
-    return DatabaseManager.get_all("health_forecasts", {"user_id": user_id})
 
 
 # --- Disease Progression Simulator ---
@@ -1108,7 +1061,7 @@ def doctor_visit_pdf(session_id: str):
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph("MediMind AI — Consultation Report", styles["Title"]))
+    story.append(Paragraph("PulseMind AI — Consultation Report", styles["Title"]))
     story.append(Spacer(1, 12))
     story.append(Paragraph(f"Date: {record.get('date', now_date())}", styles["Normal"]))
     story.append(Paragraph(f"Symptoms: {record.get('symptoms', '')}", styles["Normal"]))

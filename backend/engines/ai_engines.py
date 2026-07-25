@@ -173,6 +173,103 @@ def parse_medical_report(text: str) -> Dict[str, Any]:
 
     return result
 
+
+def parse_prescription_medications(text: str) -> List[Dict[str, Any]]:
+    """
+    Parses medication attributes from unstructured prescription text.
+    Returns a list of dicts with keys: name, dosage, frequency, duration.
+    """
+    fallback = []
+    if groq_client:
+        prompt = (
+            "You are an expert clinical AI. Parse the following prescription text and extract "
+            "all medications listed. For each medication, extract the name, dosage, frequency, and duration. "
+            "Return a JSON object containing a 'medications' key with a list of medications matching this schema:\n"
+            "{\n"
+            "  \"medications\": [\n"
+            "    {\n"
+            "      \"name\": \"medication name (e.g. Metformin)\",\n"
+            "      \"dosage\": \"dosage details (e.g. 500mg)\",\n"
+            "      \"frequency\": \"how often to take (e.g. Once daily, twice a day)\",\n"
+            "      \"duration\": \"how long to take (e.g. 30 days, 1 week, Ongoing)\"\n"
+            "    }\n"
+            "  ]\n"
+            "}\n"
+            f"Prescription text:\n{text}"
+        )
+        try:
+            response = groq_client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[
+                    {"role": "system", "content": "You are a specialized medical database extractor. Output ONLY valid, parsable JSON matching the schema. Do not output any preamble, markdown formatting (like ```json), or postamble."},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"}
+            )
+            content = response.choices[0].message.content.strip()
+            if content.startswith("```"):
+                content = content.replace("```json", "").replace("```", "").strip()
+            data = json.loads(content)
+            if isinstance(data, dict) and "medications" in data:
+                return data["medications"]
+        except Exception as e:
+            logger.error(f"Groq prescription parsing failed: {e}. Falling back to heuristics.")
+
+    # Fallback heuristics: try to search for lines that look like medications
+    # Metformin 500mg - 1 daily - 30 days
+    meds = []
+    lines = text.split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        # Simple regex matching common patterns
+        # e.g., "DrugName 500mg" or similar
+        match = re.search(r'^([A-Za-z\s\-]+)\s+(\d+(?:\.\d+)?\s*(?:mg|g|mcg|ml|tabs|caps|units))\b', line, re.IGNORECASE)
+        if match:
+            name = match.group(1).strip()
+            dosage = match.group(2).strip()
+            # Try to extract frequency and duration from remaining text
+            rest = line[match.end():].strip()
+            frequency = "As directed"
+            duration = "Ongoing"
+            
+            # Simple duration extraction
+            dur_match = re.search(r'(\d+\s*(?:day|week|month|year)s?)', rest, re.IGNORECASE)
+            if dur_match:
+                duration = dur_match.group(1).strip()
+            
+            # Simple frequency extraction
+            freq_match = re.search(r'(once|twice|thrice|daily|qd|bid|tid|qid|hourly|at night|morning)', rest, re.IGNORECASE)
+            if freq_match:
+                frequency = freq_match.group(1).strip()
+            elif "1x" in rest or "1-0-0" in rest:
+                frequency = "Once daily"
+            elif "2x" in rest or "1-0-1" in rest:
+                frequency = "Twice daily"
+            elif "3x" in rest or "1-1-1" in rest:
+                frequency = "Three times daily"
+
+            meds.append({
+                "name": name,
+                "dosage": dosage,
+                "frequency": frequency,
+                "duration": duration
+            })
+            
+    if not meds:
+        # Fallback to returning the text as a generic item if no pattern matches
+        if len(text.strip()) > 5:
+            meds.append({
+                "name": "Extracted Prescription text (check details)",
+                "dosage": "N/A",
+                "frequency": "See text",
+                "duration": text.strip()[:100] + "..." if len(text.strip()) > 100 else text.strip()
+            })
+            
+    return meds
+
+
 # ================= RAG Chat Engine =================
 def run_rag_query(query: str, report_text: Optional[str] = None) -> str:
     """
@@ -199,7 +296,7 @@ def run_rag_query(query: str, report_text: Optional[str] = None) -> str:
                 {
                     "role": "system",
                     "content": (
-                        "You are MediMind Clinical AI, a helpful and professional medical assistant. "
+                        "You are PulseMind Clinical AI, a helpful and professional medical assistant. "
                         "Answer the user's question using the provided patient report and clinical reference guidelines. "
                         "If the answer is not in the context, use your expert medical knowledge to respond safely. "
                         "Always keep responses concise, well-structured, and easy for patients to read. "
@@ -246,7 +343,7 @@ def run_rag_query(query: str, report_text: Optional[str] = None) -> str:
                 return "Your reports indicate the following out-of-range parameters: " + " ".join(parsed["alerts"]) + " Please discuss these metrics with your healthcare provider."
         return "I can analyze uploaded reports for abnormal parameters. If you have uploaded a report, you can check the anomalies card on the dashboard, or share the text here so I can check for metrics outside normal ranges."
         
-    return "I am the MediMind Clinical AI. I can review your uploaded blood chemistry panels (cholesterol, glucose, blood pressure) and cross-reference them with guidelines. What specific aspect of your medical reports or biometrics would you like me to explain?"
+    return "I am the PulseMind Clinical AI. I can review your uploaded blood chemistry panels (cholesterol, glucose, blood pressure) and cross-reference them with guidelines. What specific aspect of your medical reports or biometrics would you like me to explain?"
 
 
 # ================= Medical Imaging Classifier =================
@@ -349,7 +446,7 @@ def generate_pdf_report(report_id: str, data: Dict[str, Any]) -> bytes:
     )
 
     # Document Header
-    story.append(Paragraph("MediMind AI Diagnostics Report", title_style))
+    story.append(Paragraph("PulseMind AI Diagnostics Report", title_style))
     story.append(Paragraph(f"Document Reference ID: {report_id}", body_style))
     story.append(Spacer(1, 10))
     
@@ -425,7 +522,7 @@ def generate_pdf_report(report_id: str, data: Dict[str, Any]) -> bytes:
         textColor=colors.HexColor('#71717a'),
         leading=10
     )
-    story.append(Paragraph("<b>Disclaimer:</b> MediMind AI is an automated health intelligence platform designed for clinician support and informational tracking. It does not constitute a certified medical diagnosis. All findings and therapies must be validated by a licensed physician.", disclaimer_style))
+    story.append(Paragraph("<b>Disclaimer:</b> PulseMind AI is an automated health intelligence platform designed for clinician support and informational tracking. It does not constitute a certified medical diagnosis. All findings and therapies must be validated by a licensed physician.", disclaimer_style))
     
     doc.build(story)
     buffer.seek(0)
@@ -489,7 +586,7 @@ def groq_generate(prompt: str, system_prompt: str = None) -> str:
         return "AI service not available. Please configure GROQ_API_KEY."
     if system_prompt is None:
         system_prompt = (
-            "You are MediMind AI, an intelligent healthcare companion. "
+            "You are PulseMind AI, an intelligent healthcare companion. "
             "Provide accurate, structured medical information. "
             "Always include a brief disclaimer that responses are for informational purposes only "
             "and not a substitute for professional medical care."
@@ -2339,7 +2436,7 @@ In 3 sentences: what drove this prediction, how confident we are, and what the p
             "Individual medical history and genetics may affect accuracy",
             "Always validate AI predictions with a licensed healthcare professional",
         ],
-        "model_info": {"model": "LLM + Clinical Heuristics", "version": "MediMind AI X v5.0"},
+        "model_info": {"model": "LLM + Clinical Heuristics", "version": "PulseMind AI X v5.0"},
     }
 
 
@@ -2386,7 +2483,7 @@ def compute_national_impact_metrics(db_stats: Dict[str, Any] = None) -> Dict[str
         ],
         "global_benchmarks": {
             "similar_platforms": ["Google Health", "IBM Watson Health", "Apollo HealthCo AI"],
-            "medimind_differentiator": "India-first, multilingual, rural-ready, offline-capable, 100% explainable AI",
+            "pulsemind_differentiator": "India-first, multilingual, rural-ready, offline-capable, 100% explainable AI",
         },
         "future_roadmap": [
             "Integration with ABHA (Ayushman Bharat Health Account)",

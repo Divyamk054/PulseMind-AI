@@ -1,1 +1,1 @@
-# MediMind AI Database package
+# PulseMind AI Database package

@@ -9,28 +9,16 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ReportUpload from "./pages/ReportUpload";
 import ChatAssistant from "./pages/ChatAssistant";
-import PrescriptionScanner from "./pages/PrescriptionScanner";
 import MedicalImaging from "./pages/MedicalImaging";
-import Timeline from "./pages/Timeline";
 import RiskPrediction from "./pages/RiskPrediction";
 import AdminPanel from "./pages/AdminPanel";
-import SymptomChecker from "./pages/SymptomChecker";
-import DrugInteractions from "./pages/DrugInteractions";
-import MentalHealth from "./pages/MentalHealth";
 import NutritionPlanner from "./pages/NutritionPlanner";
 import AppointmentManager from "./pages/AppointmentManager";
 import MedicationReminders from "./pages/MedicationReminders";
-import SecondOpinion from "./pages/SecondOpinion";
 import EmergencyGuide from "./pages/EmergencyGuide";
-import SecondOpinionEngine from "./pages/SecondOpinionEngine";
-import BioTwin from "./pages/BioTwin";
-import BillAuditor from "./pages/BillAuditor";
-import PathwayVisualizer from "./pages/PathwayVisualizer";
 import Sidebar from "./components/Sidebar";
 
 // V4.0 New Pages
-import DoctorVisit from "./pages/DoctorVisit";
-import HealthForecast from "./pages/HealthForecast";
 import DiseaseSimulator from "./pages/DiseaseSimulator";
 import HealthCopilot from "./pages/HealthCopilot";
 import EmergencyTriage from "./pages/EmergencyTriage";
@@ -48,7 +36,6 @@ import PopulationAnalytics from "./pages/PopulationAnalytics";
 import OutbreakPredictor from "./pages/OutbreakPredictor";
 import MedicalEducator from "./pages/MedicalEducator";
 import ExplainableAI from "./pages/ExplainableAI";
-import NationalImpact from "./pages/NationalImpact";
 
 // Auth Context
 interface User { id: string; email: string; name: string; role: string; }
@@ -100,27 +87,15 @@ export default function App() {
         <Route path="/dashboard"          element={<P page={<Dashboard />} />} />
         <Route path="/reports"            element={<P page={<ReportUpload />} />} />
         <Route path="/chat"               element={<P page={<ChatAssistant />} />} />
-        <Route path="/prescriptions"      element={<P page={<PrescriptionScanner />} />} />
         <Route path="/imaging"            element={<P page={<MedicalImaging />} />} />
-        <Route path="/timeline"           element={<P page={<Timeline />} />} />
         <Route path="/risk"               element={<P page={<RiskPrediction />} />} />
-        <Route path="/bio-twin"           element={<P page={<BioTwin />} />} />
-        <Route path="/bill-auditor"       element={<P page={<BillAuditor />} />} />
-        <Route path="/pathway-visualizer" element={<P page={<PathwayVisualizer />} />} />
-        <Route path="/symptoms"           element={<P page={<SymptomChecker />} />} />
         <Route path="/admin"              element={<P page={<AdminPanel />} />} />
-        <Route path="/drug-interactions"  element={<P page={<DrugInteractions />} />} />
-        <Route path="/mental-health"      element={<P page={<MentalHealth />} />} />
         <Route path="/nutrition"          element={<P page={<NutritionPlanner />} />} />
         <Route path="/appointments"       element={<P page={<AppointmentManager />} />} />
         <Route path="/medications"        element={<P page={<MedicationReminders />} />} />
-        <Route path="/second-opinion"     element={<P page={<SecondOpinion />} />} />
         <Route path="/emergency"          element={<P page={<EmergencyGuide />} />} />
-        <Route path="/report-comparison"  element={<P page={<SecondOpinionEngine />} />} />
 
         {/* V4.0 New Pages */}
-        <Route path="/doctor-visit"       element={<P page={<DoctorVisit />} />} />
-        <Route path="/health-forecast"    element={<P page={<HealthForecast />} />} />
         <Route path="/disease-simulator"  element={<P page={<DiseaseSimulator />} />} />
         <Route path="/health-copilot"     element={<P page={<HealthCopilot />} />} />
         <Route path="/emergency-triage"   element={<P page={<EmergencyTriage />} />} />
@@ -138,7 +113,6 @@ export default function App() {
         <Route path="/outbreak-predictor" element={<P page={<OutbreakPredictor />} />} />
         <Route path="/medical-educator"   element={<P page={<MedicalEducator />} />} />
         <Route path="/explainable-ai"     element={<P page={<ExplainableAI />} />} />
-        <Route path="/national-impact"    element={<P page={<NationalImpact />} />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { ScanLine, Upload, Loader, AlertCircle, ChevronDown } from "lucide-react";
+import { ScanLine, Upload, Loader, AlertCircle, ChevronDown, Trash2 } from "lucide-react";
 import { api } from "../api";
 
 const MODALITIES = [
@@ -36,19 +36,35 @@ export default function MedicalImaging() {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => { api.getImages().then(setHistory).catch(() => {}); }, []);
+  const loadHistory = async () => {
+    try {
+      const imgs = await api.getImages();
+      setHistory(imgs);
+    } catch {}
+  };
+
+  useEffect(() => { loadHistory(); }, []);
 
   const handleFile = async (file: File) => {
     setUploading(true); setError(""); setResult(null);
     try {
       const res = await api.classifyImage(file, modality);
       setResult(res);
-      const imgs = await api.getImages();
-      setHistory(imgs);
+      await loadHistory();
     } catch (e: any) {
       setError(e.message);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await api.deleteImage(id);
+      if (result?.id === id) setResult(null);
+      await loadHistory();
+    } catch (e: any) {
+      setError(e.message || "Failed to delete image");
     }
   };
 
@@ -171,16 +187,23 @@ export default function MedicalImaging() {
           <h2 className="font-semibold text-white text-sm mb-4">Imaging History ({history.length})</h2>
           <div className="space-y-2">
             {[...history].reverse().map((img: any) => (
-              <div key={img.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg">
+              <div key={img.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
                 <ScanLine size={16} className="text-purple-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white truncate">{img.filename}</p>
                   <p className="text-xs text-gray-500">{img.modality?.toUpperCase()} · {img.date}</p>
                 </div>
-                <div className="text-right flex-shrink-0">
+                <div className="text-right flex-shrink-0 mr-2">
                   <p className="text-sm font-medium text-white truncate max-w-40">{img.prediction}</p>
                   <p className="text-xs text-gray-500">{(img.confidence_score * 100).toFixed(1)}% confidence</p>
                 </div>
+                <button
+                  onClick={() => handleDelete(img.id)}
+                  className="flex items-center gap-1 text-xs text-red-400 border border-red-400/30 px-2 py-1 rounded hover:bg-red-400/10 transition-all flex-shrink-0"
+                  title="Delete image"
+                >
+                  <Trash2 size={11} /> Delete
+                </button>
               </div>
             ))}
           </div>

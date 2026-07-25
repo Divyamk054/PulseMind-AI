@@ -1,13 +1,13 @@
 /**
- * Firebase configuration for MediMind AI Mobile.
+ * Firebase configuration for PulseMind AI Mobile.
  *
  * SETUP INSTRUCTIONS:
  * 1. Go to https://console.firebase.google.com/
- * 2. Open your MediMind project (or create one)
+ * 2. Open your PulseMind project (or create one)
  * 3. Project Settings → Your apps → Add app → Web
  * 4. Copy your firebaseConfig values below
- * 5. For Android native builds: add google-services.json to medimind-mobile/
- * 6. For iOS native builds: add GoogleService-Info.plist to medimind-mobile/
+ * 5. For Android native builds: add google-services.json to pulsemind-mobile/
+ * 6. For iOS native builds: add GoogleService-Info.plist to pulsemind-mobile/
  *
  * The values below are PLACEHOLDERS — replace them with your real keys.
  */

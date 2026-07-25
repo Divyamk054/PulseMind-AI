@@ -94,7 +94,7 @@ export default function AdminPanel() {
           </div>
           <div className="flex gap-2 items-start">
             <span className="text-blue-400 mt-0.5">•</span>
-            <span>Admin access is granted to accounts with <code className="text-xs bg-gray-800 px-1.5 py-0.5 rounded text-gray-300">admin@medimind.ai</code> or via admin demo login.</span>
+            <span>Admin access is granted to accounts with <code className="text-xs bg-gray-800 px-1.5 py-0.5 rounded text-gray-300">admin@pulsemind.ai</code> or via admin demo login.</span>
           </div>
           <div className="flex gap-2 items-start">
             <span className="text-amber-400 mt-0.5">•</span>

@@ -18,7 +18,7 @@ interface MetricCardProps {
 }
 
 /**
- * Reusable metric card for the MediMind mobile dashboard.
+ * Reusable metric card for the PulseMind mobile dashboard.
  * Displays a key health metric with an optional emoji icon, value, and subtitle.
  */
 export default function MetricCard({

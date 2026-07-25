@@ -1,1 +1,1 @@
-# MediMind AI Backend package
+# PulseMind AI Backend package

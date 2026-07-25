@@ -25,3 +25,9 @@ backend/database/local_db.json
 # Uploads
 uploads/
 **/uploads/
+
+# Virtual environments & secrets
+venv/
+.venv/
+**/venv/
+**/*firebase-adminsdk*.json

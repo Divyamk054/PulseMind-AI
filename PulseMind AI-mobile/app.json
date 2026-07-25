@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "MediMind AI",
-    "slug": "medimind-mobile",
+    "name": "PulseMind AI",
+    "slug": "pulsemind-mobile",
     "version": "1.0.0",
-    "scheme": "medimind",
+    "scheme": "pulsemind",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.medimind.ai"
+      "bundleIdentifier": "com.pulsemind.ai"
     },
     "android": {
-      "package": "com.medimind.ai",
+      "package": "com.pulsemind.ai",
       "adaptiveIcon": {
         "backgroundColor": "#030712",
         "foregroundImage": "./assets/android-icon-foreground.png",

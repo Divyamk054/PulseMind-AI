@@ -113,7 +113,7 @@ class MockAuthService implements IAuthService {
   private listeners: ((user: UserProfile | null) => void)[] = [];
 
   private getStorageUser(): UserProfile | null {
-    const user = localStorage.getItem("medimind_user");
+    const user = localStorage.getItem("pulsemind_user");
     return user ? JSON.parse(user) : null;
   }
 
@@ -135,7 +135,7 @@ class MockAuthService implements IAuthService {
   }
 
   async register(email: string, pass: string, name: string): Promise<UserProfile> {
-    const users = JSON.parse(localStorage.getItem("medimind_users") || "[]");
+    const users = JSON.parse(localStorage.getItem("pulsemind_users") || "[]");
     if (users.find((u: any) => u.email === email)) {
       throw new Error("Email already registered.");
     }
@@ -146,28 +146,28 @@ class MockAuthService implements IAuthService {
       role: email.includes("admin") ? "admin" : "patient"
     };
     users.push({ ...newUser, pass });
-    localStorage.setItem("medimind_users", JSON.stringify(users));
-    localStorage.setItem("medimind_user", JSON.stringify(newUser));
+    localStorage.setItem("pulsemind_users", JSON.stringify(users));
+    localStorage.setItem("pulsemind_user", JSON.stringify(newUser));
     this.notifyListeners();
     return newUser;
   }
 
   async login(email: string, pass: string): Promise<UserProfile> {
     // Admin override
-    if (email === "admin@medimind.ai" && pass === "admin123") {
+    if (email === "admin@pulsemind.ai" && pass === "admin123") {
       const adminUser = { id: "admin-id", email, name: "Dr. Administrator", role: "admin" };
-      localStorage.setItem("medimind_user", JSON.stringify(adminUser));
+      localStorage.setItem("pulsemind_user", JSON.stringify(adminUser));
       this.notifyListeners();
       return adminUser;
     }
 
-    const users = JSON.parse(localStorage.getItem("medimind_users") || "[]");
+    const users = JSON.parse(localStorage.getItem("pulsemind_users") || "[]");
     const found = users.find((u: any) => u.email === email && u.pass === pass);
     if (!found) {
       throw new Error("Invalid email or password.");
     }
     const userProfile = { id: found.id, email: found.email, name: found.name, role: found.role };
-    localStorage.setItem("medimind_user", JSON.stringify(userProfile));
+    localStorage.setItem("pulsemind_user", JSON.stringify(userProfile));
     this.notifyListeners();
     return userProfile;
   }
@@ -179,13 +179,13 @@ class MockAuthService implements IAuthService {
       name: "Google User",
       role: "patient"
     };
-    localStorage.setItem("medimind_user", JSON.stringify(mockGoogleUser));
+    localStorage.setItem("pulsemind_user", JSON.stringify(mockGoogleUser));
     this.notifyListeners();
     return mockGoogleUser;
   }
 
   async logout(): Promise<void> {
-    localStorage.removeItem("medimind_user");
+    localStorage.removeItem("pulsemind_user");
     this.notifyListeners();
   }
 }

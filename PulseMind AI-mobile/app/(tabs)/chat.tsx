@@ -113,7 +113,7 @@ export default function ChatScreen() {
       const errMsg: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: `⚠️ Error: ${err.message ?? "Backend not reachable. Please ensure the MediMind server is running on port 8000."}`,
+        content: `⚠️ Error: ${err.message ?? "Backend not reachable. Please ensure the PulseMind server is running on port 8000."}`,
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, errMsg]);
@@ -134,7 +134,7 @@ export default function ChatScreen() {
       >
         {!isUser && (
           <View style={styles.aiBadge}>
-            <Text style={styles.aiBadgeText}>🧠 MediMind AI</Text>
+            <Text style={styles.aiBadgeText}>🧠 PulseMind AI</Text>
           </View>
         )}
         <Text style={[styles.msgText, isUser ? styles.msgTextUser : styles.msgTextAI]}>
@@ -209,7 +209,7 @@ export default function ChatScreen() {
       {loading && (
         <View style={styles.typingRow}>
           <ActivityIndicator size="small" color="#06b6d4" />
-          <Text style={styles.typingText}>MediMind AI is thinking…</Text>
+          <Text style={styles.typingText}>PulseMind AI is thinking…</Text>
         </View>
       )}
 

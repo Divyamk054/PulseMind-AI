@@ -347,7 +347,7 @@ export default function DashboardScreen() {
       </View>
 
       <Text style={styles.footer}>
-        MediMind AI is for informational purposes only. Always consult a
+        PulseMind AI is for informational purposes only. Always consult a
         licensed healthcare professional for medical decisions.
       </Text>
     </ScrollView>

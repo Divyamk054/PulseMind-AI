@@ -16,7 +16,7 @@ interface Message { role: "user" | "ai"; text: string; ts: string; }
 
 export default function ChatAssistant() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "ai", text: "Hello! I'm your MediMind Clinical AI Assistant. I can help explain your medical reports, answer health questions, and provide clinical guidance. What would you like to know?", ts: new Date().toLocaleTimeString() }
+    { role: "ai", text: "Hello! I'm your PulseMind Clinical AI Assistant. I can help explain your medical reports, answer health questions, and provide clinical guidance. What would you like to know?", ts: new Date().toLocaleTimeString() }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

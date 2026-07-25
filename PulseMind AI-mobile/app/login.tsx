@@ -73,7 +73,7 @@ export default function LoginScreen() {
         {/* Logo / Header */}
         <View style={styles.header}>
           <Text style={styles.logoEmoji}>🧠</Text>
-          <Text style={styles.logoTitle}>MediMind AI</Text>
+          <Text style={styles.logoTitle}>PulseMind AI</Text>
           <Text style={styles.logoSub}>
             Your AI-powered personal health companion
           </Text>
@@ -87,7 +87,7 @@ export default function LoginScreen() {
           <Text style={styles.cardSub}>
             {isSignUp
               ? "Sign up to start managing your health"
-              : "Sign in to continue to MediMind"}
+              : "Sign in to continue to PulseMind"}
           </Text>
 
           <View style={styles.field}>
@@ -150,7 +150,7 @@ export default function LoginScreen() {
         </View>
 
         <Text style={styles.disclaimer}>
-          Your health data is encrypted and private. MediMind AI is for
+          Your health data is encrypted and private. PulseMind AI is for
           informational purposes only and does not replace professional medical
           advice.
         </Text>

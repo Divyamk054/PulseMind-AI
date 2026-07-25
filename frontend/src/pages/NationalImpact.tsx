@@ -60,7 +60,7 @@ export default function NationalImpact() {
       {/* Mission Banner */}
       <div className="bg-gradient-to-r from-orange-900/30 via-red-900/20 to-green-900/30 border border-orange-500/20 rounded-2xl p-5 text-center">
         <div className="flex justify-center gap-3 text-2xl mb-2">🇮🇳</div>
-        <h2 className="text-white font-black text-lg mb-1">MediMind AI X — Reactive → Preventive</h2>
+        <h2 className="text-white font-black text-lg mb-1">PulseMind AI X — Reactive → Preventive</h2>
         <p className="text-gray-400 text-sm max-w-xl mx-auto">
           Transforming India's healthcare from hospital-centric disease management to citizen-centric health prediction. Serving individuals, families, healthcare workers, hospitals, and government agencies.
         </p>
@@ -134,8 +134,8 @@ export default function NationalImpact() {
           {/* Differentiator */}
           {data?.global_benchmarks && (
             <div className="bg-gradient-to-r from-orange-900/20 to-red-900/20 border border-orange-500/20 rounded-2xl p-5">
-              <h3 className="text-white font-semibold text-sm mb-2">🌟 MediMind AI X Differentiator</h3>
-              <p className="text-orange-300 font-bold text-base mb-3">{data.global_benchmarks.medimind_differentiator}</p>
+              <h3 className="text-white font-semibold text-sm mb-2">🌟 PulseMind AI X Differentiator</h3>
+              <p className="text-orange-300 font-bold text-base mb-3">{data.global_benchmarks.pulsemind_differentiator}</p>
               <p className="text-xs text-gray-500">Comparable platforms: {data.global_benchmarks.similar_platforms?.join(", ")}</p>
             </div>
           )}

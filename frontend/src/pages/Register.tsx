@@ -50,7 +50,7 @@ export default function Register() {
           <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
             <Brain size={20} className="text-white" />
           </div>
-          <span className="text-xl font-bold text-white">MediMind AI</span>
+          <span className="text-xl font-bold text-white">PulseMind AI</span>
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
